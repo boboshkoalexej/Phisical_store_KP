@@ -26,13 +26,33 @@ wheels/
 local_settings.py
 db.sqlite3
 db.sqlite3-journal
+media/
+staticfiles/
+
+# Virtual Environment
+venv/
+ENV/
+env.bak/
+.venv/
+env/
+ENV/
+.ENV/
 
 # IDE
 .vscode/
 .idea/
+*.swp
+*.swo
 
-# Environment
+# OS
+.DS_Store
+Thumbs.db
+
+# Environment variables
 .env
 .env.local
-.env.*
+*.env.*
+
+# Docker
+.dockerenv
 ```
