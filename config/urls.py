@@ -18,6 +18,8 @@ from django.contrib import admin
 from django.urls import path, include
 from django.conf import settings
 from django.conf.urls.static import static
+from django.http import JsonResponse
+from django.shortcuts import render
 from rest_framework.routers import DefaultRouter
 from rest_framework.authtoken.views import obtain_auth_token
 
@@ -35,7 +37,44 @@ router.register(r'cart', CartViewSet, basename='cart')
 router.register(r'orders', OrderViewSet, basename='order')
 router.register(r'addresses', DeliveryAddressViewSet, basename='address')
 
+def home(request):
+    """Главная страница - возвращает HTML или JSON в зависимости от запроса"""
+    # Если запрос от браузера (принимает HTML), возвращаем красивую страницу
+    if 'text/html' in request.headers.get('Accept', ''):
+        context = {
+            'message': 'Добро пожаловать в Интернет-магазин физических товаров!',
+            'version': '1.0.0',
+            'endpoints': {
+                'admin': '/admin/',
+                'api_root': '/api/',
+                'products': '/api/products/',
+                'categories': '/api/categories/',
+                'cart': '/api/cart/',
+                'orders': '/api/orders/',
+                'auth_register': '/api/auth/register/',
+                'auth_login': '/api/auth/login/',
+            }
+        }
+        return render(request, 'home.html', context)
+    # Иначе возвращаем JSON для API клиентов
+    return JsonResponse({
+        'message': 'Добро пожаловать в Интернет-магазин физических товаров!',
+        'version': '1.0.0',
+        'endpoints': {
+            'admin': '/admin/',
+            'api_root': '/api/',
+            'products': '/api/products/',
+            'categories': '/api/categories/',
+            'cart': '/api/cart/',
+            'orders': '/api/orders/',
+            'auth_register': '/api/auth/register/',
+            'auth_login': '/api/auth/login/',
+        },
+        'docs': 'Используйте /api/ для получения списка всех доступных endpoints'
+    })
+
 urlpatterns = [
+    path('', home, name='home'),
     path('admin/', admin.site.urls),
     path('api/', include([
         # Auth endpoints

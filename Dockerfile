@@ -33,5 +33,6 @@ ENV DJANGO_SETTINGS_MODULE=config.settings
 # Порт, на котором работает Django
 EXPOSE 8000
 
-# Команда запуска
-CMD ["gunicorn", "--bind", "0.0.0.0:8000", "--workers", "3", "config.wsgi:application"]
+# Команда запуска (включая миграции при старте)
+CMD sh -c "python manage.py migrate && \
+           gunicorn --bind 0.0.0.0:8000 --workers 3 config.wsgi:application"
