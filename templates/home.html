@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Интернет-магазин физических товаров</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        
+        .container {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            max-width: 900px;
+            width: 100%;
+            overflow: hidden;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            padding: 40px;
+            text-align: center;
+            color: white;
+        }
+        
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+        }
+        
+        .header p {
+            font-size: 1.2em;
+            opacity: 0.95;
+        }
+        
+        .version {
+            display: inline-block;
+            background: rgba(255,255,255,0.2);
+            padding: 5px 15px;
+            border-radius: 20px;
+            margin-top: 15px;
+            font-size: 0.9em;
+        }
+        
+        .content {
+            padding: 40px;
+        }
+        
+        .endpoints-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-top: 30px;
+        }
+        
+        .endpoint-card {
+            background: #f8f9fa;
+            border-radius: 12px;
+            padding: 20px;
+            transition: all 0.3s ease;
+            border: 2px solid transparent;
+        }
+        
+        .endpoint-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+            border-color: #667eea;
+        }
+        
+        .endpoint-card h3 {
+            color: #333;
+            margin-bottom: 10px;
+            font-size: 1.1em;
+        }
+        
+        .endpoint-card a {
+            color: #667eea;
+            text-decoration: none;
+            font-weight: 500;
+            word-break: break-all;
+        }
+        
+        .endpoint-card a:hover {
+            text-decoration: underline;
+        }
+        
+        .api-info {
+            background: #e3f2fd;
+            border-left: 4px solid #2196f3;
+            padding: 20px;
+            margin-top: 30px;
+            border-radius: 0 8px 8px 0;
+        }
+        
+        .api-info h3 {
+            color: #1976d2;
+            margin-bottom: 10px;
+        }
+        
+        .api-info p {
+            color: #555;
+            line-height: 1.6;
+        }
+        
+        .features {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-top: 30px;
+        }
+        
+        .feature {
+            text-align: center;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-radius: 10px;
+        }
+        
+        .feature-icon {
+            font-size: 2em;
+            margin-bottom: 10px;
+        }
+        
+        .footer {
+            background: #f8f9fa;
+            padding: 20px 40px;
+            text-align: center;
+            color: #666;
+            border-top: 1px solid #eee;
+        }
+        
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 1.8em;
+            }
+            
+            .content {
+                padding: 20px;
+            }
+            
+            .endpoints-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🛒 Интернет-магазин</h1>
+            <p>{{ message }}</p>
+            <span class="version">Версия {{ version }}</span>
+        </div>
+        
+        <div class="content">
+            <h2 style="color: #333; margin-bottom: 20px;">📡 Доступные API эндпоинты</h2>
+            
+            <div class="endpoints-grid">
+                <div class="endpoint-card">
+                    <h3>👤 Админ панель</h3>
+                    <a href="{{ endpoints.admin }}">{{ endpoints.admin }}</a>
+                </div>
+                
+                <div class="endpoint-card">
+                    <h3>📦 Корневой API</h3>
+                    <a href="{{ endpoints.api_root }}">{{ endpoints.api_root }}</a>
+                </div>
+                
+                <div class="endpoint-card">
+                    <h3>🏷️ Товары</h3>
+                    <a href="{{ endpoints.products }}">{{ endpoints.products }}</a>
+                </div>
+                
+                <div class="endpoint-card">
+                    <h3>📂 Категории</h3>
+                    <a href="{{ endpoints.categories }}">{{ endpoints.categories }}</a>
+                </div>
+                
+                <div class="endpoint-card">
+                    <h3>🛒 Корзина</h3>
+                    <a href="{{ endpoints.cart }}">{{ endpoints.cart }}</a>
+                </div>
+                
+                <div class="endpoint-card">
+                    <h3>📋 Заказы</h3>
+                    <a href="{{ endpoints.orders }}">{{ endpoints.orders }}</a>
+                </div>
+                
+                <div class="endpoint-card">
+                    <h3>📝 Регистрация</h3>
+                    <a href="{{ endpoints.auth_register }}">{{ endpoints.auth_register }}</a>
+                </div>
+                
+                <div class="endpoint-card">
+                    <h3>🔐 Вход</h3>
+                    <a href="{{ endpoints.auth_login }}">{{ endpoints.auth_login }}</a>
+                </div>
+            </div>
+            
+            <div class="api-info">
+                <h3>ℹ️ Информация для разработчиков</h3>
+                <p>
+                    Данный интернет-магазин построен на архитектуре <strong>Backend-for-Frontend (BfF)</strong>. 
+                    Все взаимодействия с сервером происходят через REST API. Используйте указанные выше эндпоинты 
+                    для интеграции с вашим frontend-приложением (веб, мобильное приложение и т.д.).
+                </p>
+            </div>
+            
+            <div class="features">
+                <div class="feature">
+                    <div class="feature-icon">🚀</div>
+                    <div>REST API</div>
+                </div>
+                <div class="feature">
+                    <div class="feature-icon">🔒</div>
+                    <div>Безопасность</div>
+                </div>
+                <div class="feature">
+                    <div class="feature-icon">📱</div>
+                    <div>Мультиплатформенность</div>
+                </div>
+                <div class="feature">
+                    <div class="feature-icon">☁️</div>
+                    <div>Docker Ready</div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="footer">
+            <p>Курсовая работа: Разработка интернет-магазина физических товаров</p>
+            <p style="margin-top: 5px; font-size: 0.9em;">Архитектура: Backend-for-Frontend (BfF) | Django REST Framework</p>
+        </div>
+    </div>
+</body>
+</html>

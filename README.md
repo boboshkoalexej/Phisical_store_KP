@@ -35,22 +35,13 @@ docker-compose up --build
 docker-compose up -d --build
 ```
 
-**Важно:** Для корректной работы фронтенда необходимо создать директорию `frontend/dist` с HTML файлами или использовать Django для отдачи статики.
-
-Если у вас нет собранного фронтенда, вы можете:
-
-1. Создать простую HTML страницу для теста:
-```bash
-mkdir -p frontend/dist
-echo '<h1>Магазин работает!</h1>' > frontend/dist/index.html
-```
-
-2. Или настроить проксирование на Django backend через nginx.conf
+**Важно:** Главная страница теперь доступна непосредственно через Django backend на порту 8000.
 
 После запуска:
-- Frontend: http://localhost
-- Backend API: http://localhost:8000/api/
-- Django Admin: http://localhost:8000/admin/
+- **Главная страница**: http://localhost:8000/ (красивый HTML интерфейс)
+- **Frontend (Nginx)**: http://localhost (проксирует запросы к backend)
+- **Backend API**: http://localhost:8000/api/
+- **Django Admin**: http://localhost:8000/admin/
 
 #### Вариант 2: Использование PostgreSQL
 
@@ -95,17 +86,24 @@ docker-compose --version
 Проект должен иметь следующую структуру:
 ```
 .
-├── backend/              # Django приложение (или корень проекта)
-│   ├── manage.py
-│   ├── requirements.txt
+├── config/              # Настройки Django проекта
+│   ├── settings.py     # Основные настройки
+│   ├── urls.py         # URL маршруты (включая home view)
 │   └── ...
+├── templates/          # HTML шаблоны Django
+│   └── home.html       # Главная страница
+├── store/              # Приложение товаров
+├── accounts/           # Приложение пользователей
+├── cart/               # Приложение корзины
+├── orders/             # Приложение заказов
 ├── frontend/
-│   ├── dist/            # Собранные статические файлы (HTML, CSS, JS)
-│   ├── nginx.conf       # Конфигурация nginx
-│   └── Dockerfile
+│   ├── dist/          # Собранные статические файлы (опционально)
+│   └── nginx.conf     # Конфигурация nginx
 ├── docker-compose.yml
 └── README.md
 ```
+
+**Примечание:** Главная страница (`home.html`) теперь рендерится непосредственно через Django и не требует отдельного frontend/dist для базовой работы.
 
 #### Шаг 3: Настройка переменных окружения (опционально)
 
@@ -171,10 +169,13 @@ docker system prune -a
 
 #### Ошибка: "directory not found"
 
-Убедитесь, что директория `frontend/dist` существует:
+Если у вас нет frontend/dist, это не критично - главная страница теперь рендерится через Django. Nginx будет проксировать запросы на backend.
+
+При необходимости создать тестовую страницу:
 
 ```bash
 mkdir -p frontend/dist
+echo '<h1>Магазин работает!</h1>' > frontend/dist/index.html
 ```
 
 Или закомментируйте volumes в секции frontend в docker-compose.yml:
