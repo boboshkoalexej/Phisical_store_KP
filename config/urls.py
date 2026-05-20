@@ -38,40 +38,16 @@ router.register(r'orders', OrderViewSet, basename='order')
 router.register(r'addresses', DeliveryAddressViewSet, basename='address')
 
 def home(request):
-    """Главная страница - возвращает HTML или JSON в зависимости от запроса"""
-    # Если запрос от браузера (принимает HTML), возвращаем красивую страницу
-    if 'text/html' in request.headers.get('Accept', ''):
-        context = {
-            'message': 'Добро пожаловать в Интернет-магазин физических товаров!',
-            'version': '1.0.0',
-            'endpoints': {
-                'admin': '/admin/',
-                'api_root': '/api/',
-                'products': '/api/products/',
-                'categories': '/api/categories/',
-                'cart': '/api/cart/',
-                'orders': '/api/orders/',
-                'auth_register': '/api/auth/register/',
-                'auth_login': '/api/auth/login/',
-            }
-        }
-        return render(request, 'home.html', context)
-    # Иначе возвращаем JSON для API клиентов
-    return JsonResponse({
-        'message': 'Добро пожаловать в Интернет-магазин физических товаров!',
-        'version': '1.0.0',
-        'endpoints': {
-            'admin': '/admin/',
-            'api_root': '/api/',
-            'products': '/api/products/',
-            'categories': '/api/categories/',
-            'cart': '/api/cart/',
-            'orders': '/api/orders/',
-            'auth_register': '/api/auth/register/',
-            'auth_login': '/api/auth/login/',
-        },
-        'docs': 'Используйте /api/ для получения списка всех доступных endpoints'
-    })
+    """Главная страница магазина - отображает товары и категории"""
+    from store.models import Product
+    
+    # Получаем все товары для отображения на главной
+    products = Product.objects.all()[:8]  # Берём первые 8 товаров
+    
+    context = {
+        'products': products,
+    }
+    return render(request, 'home.html', context)
 
 urlpatterns = [
     path('', home, name='home'),
