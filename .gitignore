@@ -1,26 +1,11 @@
 ```
-# Python
-__pycache__/
-*.pyc
-*.pyo
-*.pyd
+# Database files
+*.sqlite3
 
-# Database
-db.sqlite3
-
-# Dependencies
-.venv/
-venv/
-env/
-node_modules/
-
-# Build artifacts
-dist/
-build/
-*.egg-info/
-
-# Logs
+# Logs and temp files
 *.log
+*.tmp
+*.swp
 
 # Environment
 .env
@@ -30,19 +15,28 @@ build/
 # Editors
 .vscode/
 .idea/
-*.swp
-*.swo
 
-# OS
+# OS generated files
 .DS_Store
 Thumbs.db
 
-# Coverage
-.coverage
-coverage/
-htmlcov/
-
-# Testing
+# Dependencies
+node_modules/
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+env/
+venv/
+.venv/
 .pytest_cache/
 .mypy_cache/
+.coverage
+htmlcov/
+
+# Build artifacts
+dist/
+build/
+target/
 ```
