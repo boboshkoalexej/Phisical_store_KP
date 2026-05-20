@@ -35,6 +35,18 @@ docker-compose up --build
 docker-compose up -d --build
 ```
 
+**Важно:** Для корректной работы фронтенда необходимо создать директорию `frontend/dist` с HTML файлами или использовать Django для отдачи статики.
+
+Если у вас нет собранного фронтенда, вы можете:
+
+1. Создать простую HTML страницу для теста:
+```bash
+mkdir -p frontend/dist
+echo '<h1>Магазин работает!</h1>' > frontend/dist/index.html
+```
+
+2. Или настроить проксирование на Django backend через nginx.conf
+
 После запуска:
 - Frontend: http://localhost
 - Backend API: http://localhost:8000/api/
@@ -65,6 +77,130 @@ docker-compose exec backend python manage.py migrate
 
 ```bash
 docker-compose exec backend python manage.py collectstatic --noinput
+```
+
+### Пошаговая инструкция по подключению Docker
+
+#### Шаг 1: Подготовка проекта
+
+Убедитесь, что у вас установлена актуальная версия Docker и Docker Compose:
+
+```bash
+docker --version
+docker-compose --version
+```
+
+#### Шаг 2: Проверка структуры проекта
+
+Проект должен иметь следующую структуру:
+```
+.
+├── backend/              # Django приложение (или корень проекта)
+│   ├── manage.py
+│   ├── requirements.txt
+│   └── ...
+├── frontend/
+│   ├── dist/            # Собранные статические файлы (HTML, CSS, JS)
+│   ├── nginx.conf       # Конфигурация nginx
+│   └── Dockerfile
+├── docker-compose.yml
+└── README.md
+```
+
+#### Шаг 3: Настройка переменных окружения (опционально)
+
+Создайте файл `.env` в корне проекта:
+
+```env
+DEBUG=1
+SECRET_KEY=your-secret-key-here
+DB_NAME=shopdb
+DB_USER=shopuser
+DB_PASS=shoppass123
+```
+
+#### Шаг 4: Запуск контейнеров
+
+```bash
+# Первый запуск с пересборкой
+docker-compose up --build
+
+# Последующие запуски
+docker-compose up -d
+```
+
+#### Шаг 5: Проверка работы
+
+Откройте браузер и перейдите по адресу:
+- http://localhost - фронтенд
+- http://localhost:8000/api/ - API бэкенда
+- http://localhost:8000/admin/ - админ панель Django
+
+#### Шаг 6: Управление контейнерами
+
+```bash
+# Просмотр логов
+docker-compose logs -f
+
+# Остановка
+docker-compose down
+
+# Перезапуск
+docker-compose restart
+
+# Удаление всех контейнеров и томов
+docker-compose down -v
+```
+
+### Решение проблем
+
+#### Ошибка: "failed to resolve source metadata"
+
+Эта ошибка возникает при проблемах с сетью или DNS. Решения:
+
+1. Проверьте подключение к интернету
+2. Используйте зеркало Docker Hub:
+```bash
+# В docker-compose.yml замените образы на локальные зеркала
+```
+
+3. Очистите кэш Docker:
+```bash
+docker system prune -a
+```
+
+#### Ошибка: "directory not found"
+
+Убедитесь, что директория `frontend/dist` существует:
+
+```bash
+mkdir -p frontend/dist
+```
+
+Или закомментируйте volumes в секции frontend в docker-compose.yml:
+
+```yaml
+frontend:
+  image: nginx:alpine
+  # volumes:
+  #   - ./frontend/dist:/usr/share/nginx/html:ro
+  #   - ./frontend/nginx.conf:/etc/nginx/conf.d/default.conf:ro
+```
+
+#### Фронтенд не отображается
+
+Проверьте, что:
+1. Файл `frontend/dist/index.html` существует
+2. Nginx конфигурация правильная
+3. Порты не заняты другими приложениями
+
+```bash
+# Проверка занятых портов
+lsof -i :80
+lsof -i :8000
+
+# Остановка других процессов
+kill -9 <PID>
 ```
 
 ## 🛠 Локальная разработка (без Docker)
