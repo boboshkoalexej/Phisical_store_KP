@@ -1,0 +1,67 @@
+version: '3.8'
+
+services:
+  # Backend сервис (Django)
+  backend:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: shop_backend
+    volumes:
+      - static_volume:/app/staticfiles
+      - media_volume:/app/media
+      - ./data/db:/app/data  # Для SQLite базы данных
+    environment:
+      - DEBUG=1
+      - DJANGO_SETTINGS_MODULE=config.settings
+      - SECRET_KEY=django-insecure-development-key-change-in-production
+    ports:
+      - "8000:8000"
+    command: >
+      sh -c "python manage.py migrate &&
+             python manage.py collectstatic --noinput &&
+             gunicorn --bind 0.0.0.0:8000 --workers 3 config.wsgi:application"
+    networks:
+      - shop_network
+    restart: unless-stopped
+
+  # Frontend сервис (Nginx + React/Vue)
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: shop_frontend
+    ports:
+      - "80:80"
+    depends_on:
+      - backend
+    networks:
+      - shop_network
+    restart: unless-stopped
+
+  # База данных PostgreSQL (опционально, можно использовать SQLite)
+  db:
+    image: postgres:15-alpine
+    container_name: shop_db
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    environment:
+      - POSTGRES_DB=shopdb
+      - POSTGRES_USER=shopuser
+      - POSTGRES_PASSWORD=shoppass123
+    ports:
+      - "5432:5432"
+    networks:
+      - shop_network
+    restart: unless-stopped
+    profiles:
+      - postgres  # Запускается только с флагом --profile postgres
+
+networks:
+  shop_network:
+    driver: bridge
+
+volumes:
+  static_volume:
+  media_volume:
+  postgres_data:
